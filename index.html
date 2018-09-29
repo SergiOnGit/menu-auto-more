@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Simple jquery responsive menu navigation with auto more button</title>
+
+	<style>
+		.main-menu {
+			max-width: 800px;
+		}
+  		.main-nav {
+		    display: inline-flex;
+		    padding: 0;
+		    list-style: none;
+		}
+		.main-nav li a {
+			padding: 10px;
+		    text-transform: capitalize;
+		    white-space: nowrap;
+			font-size: 30px;
+		    font-family: sans-serif;
+		    text-decoration: none;
+		}
+		.more-btn {
+			color: red;
+		}
+		.auto-nav-more {
+			position: relative;
+		}
+		.auto-nav-more-list {
+			position: absolute;
+			right: 0;
+			opacity: 0;
+			visibility: hidden;
+			transition: 0.2s;
+			text-align: right;
+		    padding: 0;
+		    list-style: none;
+		    background: grey;
+		    border-radius: 4px;
+		}
+		.auto-nav-more:hover .auto-nav-more-list {
+			opacity: 1;
+			visibility: visible;
+		}
+	</style>
+</head>
+<body>
+	<!-- MAIN MENU -->
+  	<div id="mainMenu" class="main-menu">
+  		<ul id="autoNav" class="main-nav">
+	  		<li>
+	  			<a href="#">home</a>
+	  		</li>
+	  		<li>
+	  			<a href="#">about us</a>
+	  		</li>
+	  		<li>
+	  			<a href="#">portfolio</a>
+	  		</li>
+	  		<li>
+	  			<a href="#">team</a>
+	  		</li>
+	  		<li>
+	  			<a href="#">blog</a>
+	  		</li>
+	  		<li>
+	  			<a href="#">contact</a>
+	  		</li>
+	  		<li id="autoNavMore" class="auto-nav-more">
+	  			<a href="#" class="more-btn">more</a>
+	  			<ul id="autoNavMoreList" class="auto-nav-more-list">
+	  				<li>
+			  			<a href="#">policy</a>
+			  		</li>
+	  			</ul>
+	  		</li>
+	  	</ul>
+  	</div>
+  	<!-- MAIN MENU END -->
+
+  	<!-- JQUERY -->
+	<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+
+	<!-- CUSTOM SCRIPTS -->
+	<script>
+		// MAIN MENU
+		const $mainMenu = $("#mainMenu");
+		const $autoNav = $("#autoNav");
+		const $autoNavMore = $("#autoNavMore");
+		const $autoNavMoreList = $("#autoNavMoreList");
+
+		autoNavMore = () => {
+			let childNumber = 2;
+			
+			if($(window).width() >= 320) {
+				// GET MENU AND NAV WIDTH
+				const $menuWidth = $mainMenu.width();
+				const $autoNavWidth = $autoNav.width();
+
+				if($autoNavWidth > $menuWidth) {
+					// CODE FIRES WHEN WINDOW SIZE GOES DOWN
+					$autoNav.children(`li:nth-last-child(${childNumber})`).prependTo($autoNavMoreList);
+
+					autoNavMore();
+				} else {
+					// CODE FIRES WHEN WINDOW SIZE GOES UP
+					const $autoNavMoreFirst = $autoNavMoreList.children('li:first-child').width();
+
+					// CHECK IF ITEM HAS ENOUGH SPACE TO PLACE IN MENU
+					if(($autoNavWidth + $autoNavMoreFirst) < $menuWidth) {
+						$autoNavMoreList.children('li:first-child').insertBefore($autoNavMore);
+					}
+				}
+
+				if($autoNavMoreList.children().length > 0) {
+					$autoNavMore.show();
+					childNumber = 2;
+				} else {
+					$autoNavMore.hide();
+					childNumber = 1;
+				}
+			}
+		}
+
+		// INIT 
+		autoNavMore();
+		$(window).resize(autoNavMore);
+		// MAIN MENU END
+	</script>
+</body>
+</html>
